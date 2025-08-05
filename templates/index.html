@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Review Sentiment Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Restaurant Review Sentiment Analysis</h1>
+        
+        <form id="analyzeForm" method="POST" action="/">
+            <div class="input-section">
+                <label for="restaurantName">Restaurant Name:</label>
+                <input type="text" id="restaurantName" name="restaurant_name" placeholder="e.g., 21st Amendment Brewery" value="{{ restaurant_name }}">
+                
+                <label for="summaryType">Summary Type:</label>
+                <select id="summaryType" name="summary_type">
+                    <option value="concise" {% if summary_type == 'concise' %}selected{% endif %}>Concise Summary</option>
+                    <option value="detailed" {% if summary_type == 'detailed' %}selected{% endif %}>Detailed Summary</option>
+                    <option value="bullet_points" {% if summary_type == 'bullet_points' %}selected{% endif %}>Bullet Points</option>
+                    <option value="key_insights" {% if summary_type == 'key_insights' %}selected{% endif %}>Key Insights</option>
+                </select>
+                
+                <button id="analyzeBtn" type="submit">Analyze Reviews</button>
+                {% if error %}
+                    <div id="errorMsg" class="error">{{ error }}</div>
+                {% endif %}
+            </div>
+        </form>
+        
+        <div id="loadingSection" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing reviews... This may take a few moments.</p>
+            <p id="statusText">Analyzing sentiment...</p>
+        </div>
+        
+        {% if results %}
+        <div id="resultSection" class="result-section">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab('summaryTab')">Summary</button>
+                <button class="tab-button" onclick="openTab('sentimentTab')">Sentiment Analysis</button>
+            </div>
+            
+            <div id="summaryTab" class="tab-content active">
+                <h3>Review Summary for {{ restaurant_name }}</h3>
+                <div id="summaryText">{{ summary|safe }}</div>
+            </div>
+            
+            <div id="sentimentTab" class="tab-content">
+                <h3>Sentiment Analysis for {{ restaurant_name }}</h3>
+                <table>
+                    <thead>
+                        <tr><th>Review</th><th>Sentiment</th><th>Confidence</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                            <tr>
+                                <td>{{ result.review }}</td>
+                                <td class="{{ result.sentiment.lower() }}">{{ result.sentiment }}</td>
+                                <td>{{ result.confidence|round(2) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Show loading animation on form submit
+        document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+            const restaurantName = document.getElementById('restaurantName').value;
+            if (!restaurantName.trim()) {
+                e.preventDefault();
+                document.getElementById('errorMsg').textContent = "Please enter a restaurant name";
+                return;
+            }
+            document.getElementById('errorMsg').textContent = "";
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
