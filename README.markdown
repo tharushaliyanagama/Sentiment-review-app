@@ -40,5 +40,3 @@ A JSON file (`data/restaurant_reviews.json`) containing 5,700 reviews for 57 San
 ## Screenshots
 ![Dashboard](screenshots/dashboard.png)
 
-## License
-MIT License
