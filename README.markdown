@@ -1,7 +1,7 @@
 # AI-Powered Sentiment Analysis and Review Summarization Web App
 
 ## Overview
-A Flask-based web app for analyzing restaurant review sentiments using BERT and summarizing reviews using BART. Built for an AI Engineer internship, showcasing AI/ML, backend development, and API/CLI skills. Uses a JSON dataset of 5,700 reviews from 57 San Francisco Bay Area restaurants.
+A Flask-based web app for analyzing restaurant review sentiments using BERT and summarizing reviews using BART.Built backend development and API/CLI skills. Uses a JSON dataset of 5,700 reviews from 57 San Francisco Bay Area restaurants.
 
 ## Features
 - Sentiment analysis of restaurant reviews using DistilBERT (Positive/Negative/Neutral).
